@@ -1,0 +1,55 @@
+{ Author  : dn5                           }
+{ Website : http://dn5.ljuska.org	  }
+{ Date    : 17/01/2011 - 00:19            }
+{ State   : Sarajevo 			  }
+{ Call    : ChangeRes('x','y')            }
+{                                         }
+{ Thanks  : cswi, squeezer, protocol,     }
+{           cobein, roy, and many others  }
+{                                         }
+{ Give a credits if you use               }
+{                                         }
+{ www.opensc.ws; www.ljuska.org           }
+{ www.ic0de.org;  www.leetcoders.org      }
+
+var
+  // How does it work  // Uses: Windows, Sysutils
+  // Using the Devmode data structure not as information
+  // about the devices of printer, but as screen res, by
+  // PELSW and PELSH / Works on: Win95, 98, 2000, ME, XP(>SP3) - don't know for others systems
+
+  dMode: DevMode;                                           // Declaring dMode of DevMode type
+
+procedure b_Default();
+var                                                         //
+  dep:Boolean;                                              // 'dep' is variable to store obtained information about one(or more)
+                                                            // of display device's graphic modes.
+
+  g  :Variant;                                              // Calculating display devices
+begin
+  // Result := 'd';
+    g:=0;                                                   // Restaring calculation
+      repeat
+        dep := EnumDisplaySettings(0, g, dMode);            // Now here we are starting to calculate
+                                                            // total display devies
+          g := g + 1;                                       // displaydevice = displaydevice + 1...
+      until (dep=False);                                    // ...until every device is stored(calculated)
+end;
+
+procedure ChangeRes(x,y:string);
+var
+  b : Variant;                                              //
+begin
+  b_Default;                                                // "Refreshing" displays and getting the
+                                                            // display devices (the one that we counted)
+    dMode.dmFields := (DM_PELSWIDTH) or (DM_PELSHEIGHT);    // Checking a set of bit flags that specify whether certain members
+                                                            // of the DEVMODE is initialized
+
+    dMode.dmPelsWidth := StrToInt(x);                       // -
+    dMode.dmPelsHeight := StrToInt(y);                      // -
+
+    b := ChangeDisplaySettings(dMode, 0);                   // Using API 'ChangeDisplaySettings' we are changing the
+                                                            // resolution of display, we already change the resolution
+                                                            // of screen but we need to renew it with this new resolution
+
+end;
